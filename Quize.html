@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -251,5 +250,75 @@
             <h2>Конец квиза</h2>
             <p>Спасибо за участие!</p>
         </div>
-    </body>
+
+
+
+
+
+
+
+    </div>
+
+    <script>
+        let choice1 = '';
+        let choices2 = [];
+
+        document.getElementById('form1').addEventListener('change', function() {
+            const selectedOption = document.querySelector('input[name="question1"]:checked');
+            if (selectedOption) {
+                choice1 = selectedOption.value;
+                showWindow(2);
+            }
+        });
+
+        function submitQuestion2() {
+            const selectedOptions = document.querySelectorAll('input[name="question2"]:checked');
+            choices2 = Array.from(selectedOptions).map(option => option.value);
+
+            if (choices2.length > 0) {
+                showWindow(3);
+            } else {
+                alert('Пожалуйста, выберите хотя бы один вариант ответа.');
+            }
+        }
+
+        const dayInput = document.getElementById('day');
+        const monthInput = document.getElementById('month');
+        const yearInput = document.getElementById('year');
+        const continueButton = document.getElementById('continueButton');
+
+        [dayInput, monthInput, yearInput].forEach(input => {
+            input.addEventListener('change', function() {
+                if (dayInput.value && monthInput.value && yearInput.value) {
+                    continueButton.disabled = false;
+                } else {
+                    continueButton.disabled = true;
+                }
+            });
+        });
+
+        function submitQuestion3() {
+            const day = dayInput.value;
+            const month = monthInput.value;
+            const year = yearInput.value;
+
+            if (day && month && year) {
+                showWindow(4);
+                document.getElementById('result').innerText = `Вы выбрали: Вопрос 1 - ${choice1}, Вопрос 2 - ${choices2.join(', ')}, Дата рождения - ${day}/${month}/${year}`;
+            } else {
+                alert('Пожалуйста, введите полную дату рождения.');
+            }
+        }
+
+        function showWindow(windowNumber) {
+            document.querySelectorAll('.quiz-window').forEach((window, index) => {
+                window.classList.toggle('hidden', index + 1 !== windowNumber);
+            });
+        }
+
+        function goBack(windowNumber) {
+            showWindow(windowNumber);
+        }
+    </script>
+</body>
 </html>
