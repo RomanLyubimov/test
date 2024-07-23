@@ -3,120 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram WebApp - Image Crop and Upload</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <title>Telegram WebApp</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
+            font-family: Arial, sans-serif;
             background-color: #f0f0f0;
         }
         .container {
+            text-align: center;
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            width: 100%;
-            max-width: 600px;
         }
-        input[type="file"] {
-            margin-bottom: 20px;
+        h1 {
+            color: #007bff;
         }
-        #imagePreview {
-            max-width: 100%;
-            margin-bottom: 20px;
-        }
-        .cropper-container {
-            max-width: 100%;
-            margin-bottom: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-        button:disabled {
-            background-color: #aaa;
+        p {
+            font-size: 1.2em;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Upload and Crop Image</h1>
-        <input type="file" id="imageInput" accept="image/*">
-        <div id="cropContainer" class="cropper-container" style="display: none;">
-            <img id="imagePreview" src="#" alt="Image Preview">
-        </div>
-        <button id="cropButton" onclick="cropImage()">Crop and Send to Bot" disabled>Crop and Send to Bot</button>
+        <h1>Hello, Telegram User!</h1>
+        <p>Welcome to our Telegram WebApp.</p>
     </div>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
-        let cropper;
-        
-        document.getElementById('imageInput').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imagePreview = document.getElementById('imagePreview');
-                    imagePreview.src = e.target.result;
-                    imagePreview.style.display = 'block';
-                    
-                    if (cropper) {
-                        cropper.destroy();
-                    }
-                    
-                    const cropContainer = document.getElementById('cropContainer');
-                    cropContainer.style.display = 'block';
-                    cropper = new Cropper(imagePreview, {
-                        aspectRatio: 1,
-                        viewMode: 1,
-                        autoCropArea: 1,
-                        ready: function() {
-                            document.getElementById('cropButton').disabled = false;
-                        }
-                    });
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        function cropImage() {
-            const canvas = cropper.getCroppedCanvas();
-            canvas.toBlob(function(blob) {
-                sendToTelegram(blob);
-            }, 'image/jpeg');
-        }
-
-        function sendToTelegram(blob) {
-            const formData = new FormData();
-            formData.append('photo', blob, 'cropped-image.jpg');
-
-            fetch('https://api.telegram.org/bot7123379006:AAHZ0wEEzrYQFfPXnfRc3klaUF1tnvRsmC8/sendPhoto?chat_id=ChatGPThird_bot', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.ok) {
-                    alert('Image sent successfully!');
-                } else {
-                    alert('Failed to send image.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while sending the image.');
-            });
+        window.Telegram.WebApp.ready();
+        const user = window.Telegram.WebApp.initDataUnsafe.user;
+        if (user) {
+            document.querySelector('h1').textContent = `Hello, ${user.first_name}!`;
         }
     </script>
 </body>
